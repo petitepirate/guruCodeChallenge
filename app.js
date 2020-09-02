@@ -73,8 +73,23 @@ Example 2: Starting date -> “2020-07-17 13:21:34”, duration -> “10 minutes
 // Provide your solution below. Written text, pseudo code, or JavaScript is acceptable
 
 function timeMachine(dateString, durationChange) {
-	let startDate = new Date(dateString);
-	console.log(startDate, durationChange);
+	let startDate = new Date(dateString); // may possibly delete  //Fri Jul 17 2020 13:21:34 GMT-0700 (Pacific Daylight Time) "10 days"
+	let initArray = dateString.split(' '); //["2020-07-17", "13:21:34"]
+	let dateArray = initArray[0].split('-'); // ["2020", "07", "17"]
+	let timeArray = initArray[1].split(':'); //["13", "21", "34"]
+
+	// Extract month day year hour minute seconds into their own variables.
+
+	// compare duration change to month day year hour minute seconds.
+
+	//if it matches one, add the value to the corresponding month day year hour minute seconds variable.
+
+	// handle what happens inside each variable if the new value is >59 sec/min, >23 hours, 29/30/21 days, 12 months.
+
+	//could add more handeling for time zone.
+	//combine the variables back into a new date
+
+	//output new date.
 }
 
 timeMachine('2020-07-17 13:21:34', '10 days');
