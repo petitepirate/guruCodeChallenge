@@ -13,11 +13,24 @@ Given a string and a word, describe a function that will return the number of
 //iterate over the array and compare each word to the input (lower or uper case)
 //add 1 to the counter if they match
 
+//preferred version (for of loop) but throws errors in codesandbox
+// function wordCounter(sentance, word) {
+// 	let counter = 0;
+// 	let wordArray = sentance.toLowerCase().split(' ');
+// 	for (wd of wordArray) {
+// 		if (wd === word.toLowerCase()) {
+// 			counter += 1;
+// 		}
+// 	}
+// 	return counter;
+// }
+
 function wordCounter(sentance, word) {
 	let counter = 0;
 	let wordArray = sentance.toLowerCase().split(' ');
-	for (wd of wordArray) {
-		if (wd === word.toLowerCase()) {
+	for (let i = 0; i < wordArray.length; i++) {
+		// this works in VS code - for of loop.
+		if (wordArray[i] === word.toLowerCase()) {
 			counter += 1;
 		}
 	}
@@ -38,30 +51,33 @@ Example 2: numbers - [ 0, 8, 1 ], result - 65
 
 // Provide your solution below. Written text, pseudo code, or JavaScript is acceptable
 
-// function squareNumbers(numList) {
+//preferred version (for of loop) but throws errors in codesandbox
+// function squareNums(arr) {
 // 	let sum = 0;
-// 	for (let i = 0; i < numList.length; i++) {
-// 		sum += numList[i] ** 2;
+// 	for (num of arr) {
+// 		sum += num ** 2;
 // 	}
 // 	return sum;
 // }
 
-// console.log(squareNumbers([ 1, 2, 3, 4, 5 ]));
-// console.log(squareNumbers([ 4, 3, 12, 6 ]));
-// console.log(squareNumbers([ 0, 8, 1 ]));
+// console.log('Question 2 Outputs:');
+// console.log(squareNums([ 1, 2, 3, 4, 5 ]));
+// console.log(squareNums([ 4, 3, 12, 6 ]));
+// console.log(squareNums([ 0, 8, 1 ]));
 
-function squareNums(arr) {
+function squareNumbers(numList) {
 	let sum = 0;
-	for (num of arr) {
-		sum += num ** 2;
+	for (let i = 0; i < numList.length; i++) {
+		sum += numList[i] ** 2;
 	}
 	return sum;
 }
 
 console.log('Question 2 Outputs:');
-console.log(squareNums([ 1, 2, 3, 4, 5 ]));
-console.log(squareNums([ 4, 3, 12, 6 ]));
-console.log(squareNums([ 0, 8, 1 ]));
+console.log(squareNumbers([ 1, 2, 3, 4, 5 ]));
+console.log(squareNumbers([ 4, 3, 12, 6 ]));
+console.log(squareNumbers([ 0, 8, 1 ]));
+
 /*
 BONUS QUESTION:
 You’ve been given a function that takes a date and time, and calculates a new date and time 
@@ -74,11 +90,11 @@ Example 2: Starting date -> “2020-07-17 13:21:34”, duration -> “10 minutes
 // Provide your solution below. Written text, pseudo code, or JavaScript is acceptable
 
 function timeMachine(dateString, durationChange) {
+	//let inputString = new Date(dateString);  //opting against using date format due to ease of formatting
 	let initArray = dateString.split(' '); //["2020-07-17", "13:21:34"]
 	let dateArray = initArray[0].split('-'); // ["2020", "07", "17"]
 	let timeArray = initArray[1].split(':'); //["13", "21", "34"]
 	let durationChangeArray = durationChange.split(' '); //['10', 'days']
-
 	// Extract month day year hour minute seconds into their own variables.
 	let year = +dateArray[0];
 	let month = +dateArray[1];
@@ -105,96 +121,100 @@ function timeMachine(dateString, durationChange) {
 	];
 
 	function pad(num) {
+		// function will add leading 0 to single numbers
 		var s = num + '';
 		while (s.length < 2) s = '0' + s;
 		return s;
 	}
 
+	function remainder(inp, num) {
+		// function to give remainder of units > what they should be to roll over time
+		var s = inp % num;
+		return s;
+	}
+
+	function divisor(inp, num) {
+		var s = Math.floor(inp / num); // function to give remainder of units > what they should be to roll over time
+		return s;
+	}
 	//compare duration change to month day year hour minute seconds.
 	//if it matches one, add the value to the corresponding month day year hour minute seconds variable.
 	//inside each if statement, write if statment to handle if the new value is > the unit length
-	if (!validUnits.includes(unitLower)) {
-		//check if units are valid
-		return 'invalid entry';
-	} else if (unit.includes('year')) {
-		// increase year if duration is in years
-		year += duration;
-	} else if (unit.includes('month')) {
-		// increase months if duration is in months
-		month += duration;
-		if (month > 12) {
-			// handle what happens if the month is greater than December
-			let remainder = month % 12;
-			let divisor = Math.floor(month / 12);
-			month = remainder;
-			year += divisor;
-		}
-	} else if (unit.includes('day')) {
-		// increase days if the duration is in days
-		day += duration;
-		if (day > 30) {
-			//handle days in months with 30
-			if (month == 4 || month == 6 || month == 8 || month == 9 || month == 11) {
-				let remainder = day % 30;
-				let divisor = Math.floor(day / 30);
-				day = remainder;
-				month += divisor;
-			} else if (
-				// handle days in months with 31
-				month == 1 ||
-				month == 3 ||
-				month == 5 ||
-				month == 7 ||
-				month == 8 ||
-				month == 10 ||
-				month == 12
-			) {
-				let remainder = day % 31;
-				let divisor = Math.floor(day / 31);
-				day = remainder;
-				month += divisor;
-			} else {
-				//handle february
-				//we wont handle leap-years
-				let remainder = day % 28;
-				let divisor = Math.floor(day / 28);
-				day = remainder;
-				month += divisor;
+	try {
+		if (!validUnits.includes(unitLower)) {
+			//check if units are valid
+			return 'invalid entry';
+		} else if (unit.includes('year')) {
+			// increase year if duration is in years
+			year += duration;
+		} else if (unit.includes('month')) {
+			// increase months if duration is in months
+			month += duration;
+			if (month > 12) {
+				// handle what happens if the month is greater than December
+				let rem = remainder(month, 12);
+				let div = divisor(month, 12);
+				month = rem;
+				year += div;
+			}
+		} else if (unit.includes('day')) {
+			// increase days if the duration is in days
+			day += duration;
+			let shortMonth = [ 4, 6, 8, 9, 11 ];
+			let longMonth = [ 1, 3, 5, 7, 8, 10, 12 ];
+			if (day > 30) {
+				if (shortMonth.includes(month)) {
+					//handle days in months with 30
+					let rem = remainder(day, 30);
+					let div = divisor(day, 30);
+					day = rem;
+					month += div;
+				} else if (longMonth.includes(month)) {
+					// handle days in months with 31
+					let rem = remainder(day, 31);
+					let div = divisor(day, 31);
+					day = rem;
+					month += div;
+				} else {
+					//handle february - we wont handle leap-years
+					let rem = remainder(day, 28);
+					let div = divisor(day, 28);
+					day = rem;
+					month += div;
+				}
+			}
+		} else if (unit.includes('hour')) {
+			hour += duration; // increaes hours if duration is in hours
+			if (hour >= 24) {
+				let rem = remainder(hour, 24);
+				let div = divisor(hour, 24);
+				hour = rem;
+				day += div;
+			}
+		} else if (unit.includes('minute')) {
+			//increase minutes if duration is in minutes
+			minute += duration;
+			if (minute >= 60) {
+				//handle if minutes is greater than 60
+				let rem = remainder(minute, 60);
+				let div = divisor(minute, 60);
+				minute = rem;
+				hour += div;
+			}
+		} else {
+			/*if (unit.includes('second')) */ // increase seconds if duration is in seconds
+			second += duration;
+			if (second >= 60) {
+				//handle if seconds is greater than 60
+				let rem = remainder(second, 60);
+				let div = divisor(second, 60);
+				second = rem;
+				minute += div;
 			}
 		}
-	} else if (unit.includes('hour')) {
-		hour += duration; // increaes hours if duration is in hours
-		if (hour >= 24) {
-			let remainder = hour % 24; // handle if hours is greater than 24
-			let divisor = Math.floor(hour / 24);
-			hour = remainder;
-			day += divisor;
-		}
-	} else if (unit.includes('minute')) {
-		//increase minutes if duration is in minutes
-		minute += duration;
-		if (minute >= 60) {
-			//handle if minutes is greater than 60
-			let remainder = minute % 60;
-			let divisor = Math.floor(minute / 60);
-			minute = remainder;
-			hour += divisor;
-		}
-	} else if (unit.includes('second')) {
-		// increase seconds if duration is in seconds
-		second += duration;
-		if (second >= 60) {
-			//handle if seconds is greater than 60
-			let remainder = second % 60;
-			let divisor = Math.floor(second / 60);
-			second = remainder;
-			minute += divisor;
-		}
-	} else {
-		// throw an error if none of these apply
-		return 'invalid entry';
+	} catch (error) {
+		alert(error);
 	}
-
 	//could add more handeling for time zone.
 
 	//combine the variables back into a new date
@@ -204,9 +224,8 @@ function timeMachine(dateString, durationChange) {
 }
 
 console.log('Question 3 Outputs:');
-console.log(timeMachine('2020-07-17 13:21:34', '10 minutes'));
+console.log(timeMachine('2020-07-17 13:21:34', '10 seconds'));
 console.log(timeMachine('2020-07-17 13:21:34', '10 years'));
-console.log(timeMachine('2020-07-17 13:21:34', '10 days'));
 
 console.log('Question 3 Test Output:');
 //Testing
